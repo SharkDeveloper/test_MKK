@@ -192,3 +192,65 @@ alembic revision --autogenerate -m "Description"
 
 Используйте сервисы вроде [webhook.site](https://webhook.site) или [ngrok](https://ngrok.com) 
 для получения webhook уведомлений во время разработки.
+
+## Запуск тестов
+
+Проект использует `pytest` для автоматизированного тестирования. Тесты покрывают API эндпоинты, сервисы, миграции БД и работу с платежным шлюзом.
+
+### Запуск в Docker контейнере
+
+```bash
+# Установка необходимых зависимостей (если не установлены в образе)
+docker-compose exec api pip install pytest pytest-asyncio pytest-cov aiosqlite httpx
+
+# Запуск всех тестов с подробным выводом
+docker-compose exec api pytest tests/ -v
+
+# Запуск тестов с отчетом о покрытии кода
+docker-compose exec api pytest tests/ -v --cov=app --cov-report=term-missing
+
+# Запуск тестов по категориям
+docker-compose exec api pytest tests/test_api.py -v        # Тесты API
+docker-compose exec api pytest tests/test_services.py -v   # Тесты сервисов
+docker-compose exec api pytest tests/test_migrations.py -v # Тесты миграций
+docker-compose exec api pytest tests/test_gateway.py -v    # Тесты платежного шлюза
+```
+
+### Локальный запуск тестов
+
+```bash
+# Установка зависимостей
+pip install -r requirements.txt
+pip install pytest pytest-asyncio pytest-cov aiosqlite httpx
+
+# Запуск PostgreSQL и RabbitMQ (требуется для интеграционных тестов)
+docker-compose up -d postgres rabbitmq
+
+# Применение миграций
+alembic upgrade head
+
+# Запуск всех тестов
+pytest tests/ -v
+
+# Запуск с покрытием
+pytest tests/ -v --cov=app --cov-report=html
+```
+
+### Структура тестов
+
+- `test_api.py` - Тесты REST API эндпоинтов (создание платежа, получение статуса, идемпотентность)
+- `test_services.py` - Тесты бизнес-логики и сервисов обработки платежей
+- `test_migrations.py` - Тесты целостности схемы БД и миграций Alembic
+- `test_gateway.py` - Тесты эмуляции внешнего платежного шлюза
+
+### Конфигурация тестирования
+
+Настройки pytest находятся в файле `pytest.ini`:
+- Асинхронный режим через `pytest-asyncio`
+- Автоматическое обнаружение асинхронных тестов
+- Отчет о покрытии кода (опционально)
+
+Фикстуры для тестов определены в `tests/conftest.py` и включают:
+- Изолированную тестовую базу данных (SQLite для юнит-тестов, PostgreSQL для интеграционных)
+- Моки для внешних зависимостей (RabbitMQ, webhook)
+- Тестовые данные и фабрики объектов
