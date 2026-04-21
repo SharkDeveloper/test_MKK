@@ -1,1 +1,23 @@
-Nothing should be ignored based on the provided file changes, as they only include source code files (.py) without any build artifacts, dependencies, or temporary files.
+```
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.coverage
+.coverage.*
+htmlcov/
+
+# Testing
+.pytest_cache/
+.pytest_cache/*
+!.gitignore
+
+# Directories
+*.egg-info/
+*.egg
+dist/
+build/
+```
