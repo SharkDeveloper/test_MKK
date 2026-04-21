@@ -45,6 +45,13 @@ class PaymentResponse(BaseModel):
         populate_by_name = True
         from_attributes = True
 
+    @field_validator("metadata_", mode="before")
+    @classmethod
+    def validate_metadata(cls, v):
+        if v is None or isinstance(v, dict):
+            return v
+        return None
+
 
 class PaymentDetailResponse(PaymentResponse):
     pass
