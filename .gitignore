@@ -1,23 +1,40 @@
 ```
-# Python
+# Dependencies
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-*.so
+.venv/
+venv/
+.env
+.env.local
+.env.*
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage
 .coverage
-.coverage.*
+coverage/
 htmlcov/
 
 # Testing
 .pytest_cache/
-.pytest_cache/*
-!.gitignore
+.mypy_cache/
 
-# Directories
-*.egg-info/
-*.egg
-dist/
-build/
+# OS
+.DS_Store
+Thumbs.db
 ```
