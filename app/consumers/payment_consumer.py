@@ -101,7 +101,6 @@ async def process_payment(
 @broker.subscriber(
     PAYMENTS_NEW_QUEUE,
     exchange=PAYMENTS_EXCHANGE,
-    queue_durable=True,
 )
 async def process_payment_message(message: dict) -> None:
     """

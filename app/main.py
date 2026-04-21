@@ -27,7 +27,11 @@ def create_app() -> FastAPI:
 
     @app.on_event("startup")
     async def startup():
-        await init_db()
+        try:
+            await init_db()
+        except Exception as e:
+            print(f"Warning: Could not initialize database on startup: {e}")
+            print("Database will be initialized when first request is made")
 
     @app.get("/health")
     async def health_check():
